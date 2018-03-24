@@ -1,0 +1,5 @@
+# Ryan Hosford
+# rph160030
+# CS3377
+{COL1+=$1}
+{COL4+=$4}END{print COL1," ",COL4} 

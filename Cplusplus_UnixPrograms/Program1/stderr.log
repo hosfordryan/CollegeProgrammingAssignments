@@ -1,0 +1,6 @@
+This is an error message.
+This is an error message.
+This is an error message.
+./run.sh: line 9: ./project1: No such file or directory
+./run.sh: line 12: ./project1: No such file or directory
+./run.sh: line 15: ./project1: No such file or directory
