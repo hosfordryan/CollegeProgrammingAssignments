@@ -1,0 +1,7 @@
+Ryan Hosford 22 14 100
+Ted 9 35 22
+James 22 35 22 28 22 14 1
+Bob -4 3 35 2
+Brandon Hosford 22 14 1 35 22
+Kyle Rinker 28 -12 35
+Jacob McFadden 28 22 14 900

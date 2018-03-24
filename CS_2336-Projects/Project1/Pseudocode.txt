@@ -1,0 +1,29 @@
+Ryan Hosford - rph160030
+
+solve(name, xArr, yArr){
+    declare placeholder int named sum
+    (for loop starting at i=0, until xArr length -2){
+        sum += (xArr[i+1] + xArr[i]) * (yArr[i+1] - yArr[i])
+    }
+    sum = absolute value of sum
+    sum = sum divided by 2
+
+    return name with '\t' between followed by sum as a String
+}
+
+output{
+    Write return value of solve output file pilot_areas.txt
+}
+
+input{
+    Loop until end of file{
+        save first string in file pilot_routes.txt as name
+        Alternate saving doubles into arrays of same length
+        call solve function and send it name and both arrays
+        call output function and send what was returned by solve function
+    }
+}
+
+main(){
+    call input function
+}

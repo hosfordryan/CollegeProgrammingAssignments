@@ -1,0 +1,237 @@
+NOTE: Don't have to use a linked list. Can use Vector if you want.
+
+
+Node Class{
+	private:
+		int value;
+		int weight;
+	public:
+		Node(){value = 0; weight = 0;};
+		Node(int v){value = v; weight = 0;};
+		Node(int v, int w){value = v; weight = w;};
+		int getV(){return value;};
+		int getW(){return weight;};
+		void setV(int in){value = in;};
+		void setW(int in){weight = in;};
+}
+
+Graph Class{
+	private:
+		int size;
+		vector<vector<Node>> graph;			//If there is going to be a line of input for each vertex, you can 										//use an array. Read through and count number of lines in input
+
+	public:
+		Graph(){size = 0; graph(0,vector<Node>(0));};
+		~Graph(){delete graph};
+		int getSize(){return size;};
+		vector<vector<Node>> getGraph(){return graph;};
+		void setSize(int in){size = in;};
+		void setGraph(vector<vector<Node>> in){graph = in;};
+
+		void addVertex(string inputLine)
+		{
+			istringstream ss(inputLine);
+			vector<Node> toAdd;
+			int vert;
+			ss >> vert;
+			Node vertex = Node(vert);
+			toAdd.push_back(vertex);
+
+			int nextValue;		//LOOP THROUGH AND MAKE THE NODES AND ADD THEM TO VECTOR
+			while(ss >> nextValue){
+				int weight;
+				ss >> weight;
+				Node newNode = Node(nextValue,weight);
+				toAdd.push_back(newNode);
+			}
+			graph.push_back(toAdd);
+			size++;
+		}
+
+		int getIndexOfVert(int target)
+		{
+			int index = -1;
+
+			for(int i = 0; i < graph.size(); i++){
+				if(graph[i][0] == target)
+					index = i;
+			}
+
+			if(index == -1)
+				cout << "TARGET NOT FOUND" << endl;
+
+			return index;
+		}
+
+		bool isElementInList(int indexOfList, int target)	
+		{
+
+			for(int i = 0; i < graph[indexOfList].size();i++){
+				if(graph[indexOfList][i].getV() == target)
+					return true;
+			}
+
+			return false;
+		}
+
+		int getIndexOfElementInList(int indexOfList, int target)	
+		{
+			int index = -1;
+
+			for(int i = 0; i < graph[indexOfList].size();i++){
+				if(graph[indexOfList][i].getV() == target)
+					index = i;
+			}
+
+			return index;
+		}
+
+
+		void print(int v, bool visited[])
+		{
+			int index = getIndexOfVert(v);
+			visited[index] = true;
+			cout << v << " ";
+
+			for(int i = 0; i < graph[index].size();i++){	//Starting at 0, shouldn't matter but if it 													//doesn't work, try starting at 1
+				if(!visited[getIndexOfVert(graph[index][i])])
+					print(graph[index][i],visited);
+			}
+		}
+
+		void DFTPrint(int v)
+		{
+			bool *visited = new bool[size];
+			for(int i = 0; i < size; i++){
+				visited[i] = false;
+			}
+
+			print(v,visited);
+			cout << endl;
+		}
+
+
+
+}
+
+
+Pilot Class{
+
+	public:
+		Pilot(string inN){name = inN; lengthOfPath = 0; validPath = true;};
+		string getName(){return name;};
+		int getLength(){return lengthOfPath;};
+		bool getValid(){return validPath;};
+
+		setName(string in){name = in;};
+		setLengthOfPath(int in){lengthOfPath = in;};
+		setValid(bool in){validPath = in;};
+
+		incrementLength(int in){lengthOfPath += in;};
+
+		bool operator < (const Pilot& other) const
+		{
+			return (lengthOfPath < other.getLength());
+		}
+
+	private:
+		string name;
+		int lengthOfPath;
+		bool validPath;
+
+}
+
+Main Class{
+	
+	void buildGraph(Graph &graph)
+	{
+		ifstream inFile("galaxy.txt");
+
+		while(!inFile.eof()){
+			string wholeLine;
+			getline(inFile,wholeLine);
+			graph.addVertex(wholeLine);
+		}
+
+	}
+
+	void RoutesTesting(Graph& &graph)
+	{
+		ifstream in("pilot_routes.txt");
+		ofsteam out("patrols.txt");
+
+		vector<Pilot> pList;
+
+		while(!in.eof()){
+			
+			string wholeLine;
+			getline(in,wholeLine);
+			istringstream ss(wholeLine);
+
+			string name
+			while(!isDigit(ss.peek())){
+				name+=ss.get();
+			}
+
+			Pilot pil = Pilot(name);
+			int start;
+			ss >> start;
+
+			if(getIndexOfVert(start) == -1)
+				pil.setValid = false;
+			else{				//May not need this else. If there is an issue, try changing
+				while(!ss.eof()){
+					int nextLoc;
+					ss >> nextLoc;
+
+					if(getIndexOfVert(nextLoc) == -1)
+						pil.setValid = false;
+					else{
+						if(graph.isElementInList(graph.getIndexOfVert(nextLoc),nextLoc)){	//If the next is in List of
+																						//Previous location
+							pil.incrementLength(graph.getGraph()[graph.getIndexOfVert(nextLoc)][	graph.getIndexOfElementInList(graph.getIndexOfVert(),nextLoc)].getW());
+						}
+					}
+				
+				}
+			}
+
+			pList.push_back(pil);
+
+		}
+
+		//AT THIS POINT WE HAVE MADE A LIST OF THE PILOTS AND WHATNOT. JUST NEED TO SORT AND OUTPUT
+
+		sort(pList.begin(),pList.end());	//Sorts in ascending order
+		out << left << setw(20) <<"Name"<< left << setw(20) <<"Path Length"<< left << setw(20) <<"Valid/Invalid" << endl;
+		for(int i = 0; i < pList.size(); i++){
+			if(pList[i].getValid == false){
+				out << left << setw(20) << pList[i].getName();
+				out << left << setw(20) << "";
+				if(pList[i].getValid)
+					out << left << setw(20) << "Valid";
+				else
+					out << left << setw(20) <<"Invalid";
+			else{
+				out << left << setw(20) << pList[i].getName();
+				out << left << setw(20) << pList[i].getLength();
+				if(pList[i].getValid)
+					out << left << setw(20) << "Valid";
+				else
+					out << left << setw(20) <<"Invalid";
+			}
+			out << endl;
+		}
+
+	}
+
+	int main()
+	{
+		Graph graph = Graph();
+		buildGraph(graph);
+
+
+
+		return 0;
+	}
+}

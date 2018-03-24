@@ -1,0 +1,350 @@
+BaseNode Class:
+    Abstract
+    Has string PilotName and double PatrolArea
+
+    Default constructor{
+        sets attributes to "" and 0 respectively
+    }
+
+    Overloaded constructor{
+        Takes string and double
+        sets attributes = constructor parameters
+    }
+
+    Copy constructor{
+        Takes BaseNode object as input
+        creates a copy of input
+    }
+
+    PilotName Accessor{
+        returns PilotName
+    }
+
+    PatrolArea Accessor{
+        returns PatrolArea
+    }
+
+    PilotName Mutator{
+        takes String
+        sets Pilotname to input
+    }
+
+    PatrolArea Mutator{
+        takes double
+        sets PatrolArea to input
+    }
+
+
+
+DoubleLinkNode Class Inherits BaseNode Class:
+    Has 2 pointers, nextPointer and prevPointer
+
+    Default Constructor{
+        Sets nextPointer and prevPointer to null
+    }
+
+    Overloaded constructor{
+        Takes 2 inputs, both pointers
+        calls overloaded BaseNode Constructor with a string and a double
+        sets nextPointer and prevPointer
+    }
+
+    Copy Constructor{
+        Takes DoubleLinkNode as input
+        Calls overloaded BaseNode Copy Constructor with a Basenode
+        copys input's pointers to this objects attributes
+    }
+
+    nextPointer Accessor{
+        returns nextPointer
+    }
+
+    prevPointer Accessor{
+        returns prevPointer
+    }
+
+    nextPointer Mutator{
+        Takes pointer as input
+        sets nextPointer to input
+    }
+
+    prevPointer Mutator{
+        Takes pointer as input
+        sets prevPointer to input
+    }
+
+LinkedList Class:
+    Has 2 attributes: headPointer and tailPointer               ON THIS PART. MAKE LINKEDLIST CLASS
+
+    Default Constructor{
+        sets headPointer and tailPointer to null
+    }
+
+    Overloaded Constructor{
+        Takes node and assigns headPointer to point at input
+    }
+
+    Destructor{
+        Call Delete(tailPointer)
+    }
+
+    Delete{
+        takes node as input
+        check if headPointer == tailPointer:
+            delete input
+        else:
+            save nextPointer to tempPnt
+            tailPointer = tempPnt
+            delete input and call Delete(tempPnt)
+    }
+
+    headPointer Accessor{
+        return headPointer
+    }
+
+    tailPointer Accessor{
+        return tailPointer
+    }
+
+    headPointer Mutator{
+        takes pointer as input
+        set headPointer = input
+    }
+
+    tailPointer Mutator{
+        takes pointer as input
+        set tailPointer = input
+    }
+
+    overloaded << operator{
+        takes ostream& and node& as input
+        display(node,ostream&)
+    }
+
+    display{
+        Takes node as input and ostream
+        check if(input == tailPointer)
+            ostream << input.getName << '\t' << fixed << setprecision(2) << input.getPatrolArea << endl
+        else:
+            saves nextPointer to tempPnt
+            ostream << input.getName and input.getPatrolArea
+            call display(tempPnt)
+    }
+
+     bool nodeSwap{
+        Takes 3 nodes, a,b,head as input
+        check if(!a): return false
+        check if(!b): return false
+        Make 2 new DoubleLinkNode, aPrev and bPrev
+        set aPrev = a.getPrev (Uses copy constructor)
+        set bPrev = b.getPrev
+
+        Make new DoubleLinkNode temp
+        set temp = a
+
+        temp = a.getNext        (swap next pointers)
+        a.setNext(b.getNext)
+        b.setNext(temp)
+
+        temp = a.getPrev    (swap prev pointers)
+        a.setPrev(b.getPrev)
+        b.setPrev(temp)
+
+        return true
+    }
+
+     baseNode sort{
+        Takes headNode and string sortType as input
+        check if(sortType == "num"):
+            for loop(Node n = headNode; n->next != NULL; n = n.getNext) (try -> or .getNext())
+                for loop(Node n2 = head.getNext; n1 != NULL; n1 = n1->nextNode)
+                    check if(n.getPatrolArea > n1.getPatrolArea):
+                        nodeSwap(n,n1,headNode)
+        else:
+            for loop(Node n = headNode; n->next != NULL; n = n.getNext) (try -> or .getNext())
+                for loop(Node n2 = head.getNext; n1 != NULL; n1 = n1->nextNode)
+                    check if(n.getName.compare(n1.getName) < 0):
+                        nodeSwap(n,n1,headNode)
+
+        return headNode
+
+    }
+
+
+Main Class:
+
+    input1{
+        takes 2 vectors and linkedlist& and istream&
+        use Regex to check that input follows guidelines
+        Create new Node Node
+        loop while(istream doesn't get to a /n):
+            save string name as name portion of istream.
+            Node.setPilotName(name)
+            declare double doubTemp
+            istream >> doubTemp
+            xArr.push_back(doubTemp)
+            istream.get() to remove comma
+            istream >> doubTemp
+            yArr.push_back(doubTemp)
+        set double area = call solve(xArr,yArr)
+        Node.setPatrolArea(area)
+
+        if(linkedlist.getHead == NULL):
+            linkedlist.setHead(Node)
+        if(linkedlist.getTail == NULL):
+            linkedlist.setTail(Node)
+
+        call addNode(linkedlist&, Node)
+
+    }
+
+
+    (taken from previous program)
+    double solve(vector<double>& xArr, vector<double>& yArr ){     //Calculate the area
+        double sum = 0;
+        for(int i = 0; i < xArr.size()-1; i++){
+            sum += ((xArr[i+1] + xArr[i]) * (yArr[i+1] - yArr[i]) );
+        }
+        sum = abs(sum);
+        sum = sum/2;
+        xArr.clear();
+        yArr.clear();
+        return sum;
+    }
+
+
+    addNode{
+        takes linkedList and inputNode
+        linkedList.getTail.setNext(inputNode)
+        inputNode.setPrev(linkedList.getTail)
+        linkedList.setTail(inputNode)
+
+    }
+
+    bool input2{
+        takes istream& and command&
+
+        getline and save it as wholeLine
+        check if(wholeLine contains "area" or "pilot"):
+            check if first word is "sort":
+                command[0] = sort
+                command[1] = last part of line
+                return true
+            else:
+                return false
+        else:
+            check if contains a number: //has a number, make sure it is the only number. That would mean it is area search
+                if(check if first part is a number):
+                    check that is is only a number, no symbols or anything else:
+                    command[0] = "searchNum"
+                    command[1] = wholeLine
+                    return true
+                else:
+                    return false;
+            else:
+                check that there is no symbols or disallowed characters:
+                    command[0] = "searchName"
+                    command[1] = wholeLine
+
+
+
+
+
+    }
+
+
+    output{
+        takes string and ostream& as input
+        ostream << string << endl;
+    }
+
+    bool searchRecurNum{
+        takes Node, double target, and LinkedList&
+
+        check if(linkedList.getTail == Node):
+            check if(Node.getPilotArea == target):
+                return true;
+            else:
+                return false;
+
+        else:
+            check if(Node.getPilotArea == target):
+                return true;
+            else:
+                call searchRecurNum(Node.getNext,target,LinkedList&)
+    }
+
+    bool searchRecurName{
+        takes Node, string target, and LinkedList&
+
+        check if(linkedList.getTail == Node):
+            check if(Node.getPilotName == target):
+                return true;
+            else:
+                return false;
+
+        else:
+            check if(Node.getPilotName == target):
+                return true;
+            else:
+                call searchRecurNum(Node.getNext,target,LinkedList&)
+    }
+
+    bool search(
+        takes string type and string target and linkedList%
+        if(type = "num"):
+            check if call to searchRecurNum(LinkedList.getHead,target, LinkedList&) returns true:
+                return true
+            else:
+                return false
+        else if(type == "name"):
+            check if call to searchRecurName(LinkedList.getHead,target, LinkedList&) returns true:
+                return true
+            else:
+                return false
+
+    )
+
+    DO INPUT STUFF FOR SECOND FILE
+    DO OUTPUT STUFF
+
+    main{
+        declare istream with file pilot_routes.txt
+        declare istream2 with file commands.txt
+        declare ostream with file "results.txt"
+        Declare new Linkedlist
+        Declare 2 new Double Vector xArr and yArr
+        call Input1 and send linkedList, Vectors, and istream&
+        while(istream isn't at end of file):
+            call Input1 and send linkedList, Vectors, and istream&
+
+        while(istream2 isn't at the end of file):
+            Declare string[2] command
+            call input2 and send istream& (second istream) and command&
+
+            check if(command[0] == "sort"):
+                check if(command[1] == "area")
+                    call Linkedlist.sort(send Linkedlist.getHead() and "num")
+                else:
+                    call Linkedlist.sort(send Linkedlist.getHead() and "name")
+            else if(command[0] == "searchNum"):
+                declare string result
+                if call to search(send "num" and command[1] and LinkedList%) returns true, set result to "found"
+                else set result to "not found"
+                declare string toOutput = command[1] << " " << result
+                call output(ostream&,toOutput)
+
+            else if(command[0] == "searchName")
+                declare string result
+                if call to search(send "name" and command[1] and LinkedList%) returns true, set result to "found"
+                else set result to "not found"
+                declare string toOutput = command[1] << " " << result
+                call output(ostream&,toOutput)
+
+        ostream << linkedList
+
+        close istreams and ostream
+    }
+
+
+

@@ -1,0 +1,7 @@
+Ryan Hosford                            Invalid             
+Ted                                     Invalid             
+Bob                                     Invalid             
+Kyle Rinker                             Invalid             
+Jacob McFadden                          Invalid             
+Brandon Hosford     12                  Valid               
+James               23                  Valid               

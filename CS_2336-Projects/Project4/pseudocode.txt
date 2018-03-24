@@ -1,0 +1,428 @@
+IF YOU ARE HAVING TROUBLE WITH SEARCH, TRY COMBINING ON THE INSERT
+
+Side note: For output, make sure the final solution is output in order of highest exponent to lowest
+When outputting A term, if the exponent is not 0, make sure you output an x before it
+
+
+Node class:
+	public:
+		default constructor{
+			set all attributes to 0 except coefDenom = 1;
+		}
+		Overloaded constructor(int c, int e){
+			set coefNume = c
+			set coefDenom = 1
+			set exp = e
+			set pointers to 0
+			set beenCopied to false;
+			set wasTheBaseForCopy to false;
+		}
+		Copy constructor(Node *other){
+			set coefnume = other->getcn
+			set exp = other->gete
+			set left* = other->getLeft
+			set right* = other->getRight
+		}
+		int getcn(){
+			return coefNume
+		}
+		int getcd(){
+			return coefDenom
+		}
+		int gete(){
+			return exp
+		}
+		void setcn(int in){
+			coefNume = in
+		}
+		void setcd(int in){
+			coefDenom = in
+		}
+		void sete(int in){
+			exp = in
+		}
+		Node* getLeft(){
+			return left
+		}
+		Node* getRight(){
+			return right
+		}
+		void setLeft(Node* ptr){
+			set left = ptr
+		}
+		void setRight(Node* ptr){
+			set right = ptr
+		}
+		bool getCopied(){
+			return beenCopied
+		}
+		void setCopied(bool in){
+			beenCopied = in
+		}
+		bool getWasTheBaseForCopy(){
+			return wasTheBaseForCopy
+		}
+		void setWasTheBaseForCopy(bool in){
+			wasTheBaseForCopy = in
+		}
+	private:
+		int exp;
+		int coefNume;
+		int coefDenom;
+		Node* left
+		Node* right
+		bool beenCopied	//bool to see if this node has been copied over yet
+		bool wasTheBaseForCopy;
+
+BinarySearchTree class:
+	public:
+		default constructor{
+			root = 0
+		}
+		Overloaded constructor(Node* newRoot){
+			set root = newRoot
+		}
+
+		deleteTree(node* leaf){
+			if(leaf != 0){
+				deleteTree(leaf->getLeft())
+				deleteTree(leaf->getRight())
+				delete(leaf)
+
+			}
+		}
+
+		Destructor{
+			call deleteTree function(send root)
+		}
+
+		Node* getRoot(){
+			return root
+		}
+		void setRoot(Node* ptr){
+			set root = ptr
+		}
+
+		void insert(Node* toInsert, Node* curNode){				//CHANGE THIS TO CHECK FOR DUPLICATES AND COMBINE HERE
+			if(root == 0){
+				root = toInsert
+			}
+			else{
+				if(toInsert->gete() <= curNode->gete()){		//If the exponent is equal, will insert to the left
+					if(curNode->getLeft() == 0){
+						curNode->setLeft(toInsert);
+						return;
+					}
+					else{
+						insert(toInsert,curNode->getLeft())
+					}
+				}
+				else if(toInsert->gete() > curNode->gete()){
+					if(curNode->getRight == 0){
+						curNode->setRight(toInsert)
+					}
+					else{
+						insert(toInsert, curNode->getRight())
+					}
+				}
+			}
+
+		}
+
+		Node* combineTerms(Node* n1, Node* n2){
+			Node* newNode = new Node();
+			int CoefN = 0;
+			int CoefD = 1;
+			int exp = 0;
+
+			coefN = n1->getcn() + n2->getcn();
+
+			newNode->sete(exp);
+			newNode->setcn(CoefN);
+			newNode->setcd(CoefD);
+			return newNode;
+		}
+
+			//Search is meant to be called in a while loop. While(search). That way it combines all duplicate exponents. May be more than 1
+		bool search(Node* leaf, (Node*)& nodeToCombine){	//Search for other nodes with the same exponent to combine and simplify. The first time this is called, it will be called with leaf = nodeToCombine
+			if(leaf == 0){
+				return false
+			}	
+			if(nodeToCombine->getCopied() == true){		//So we don't mess with already copied nodes
+				return false;
+			}
+			if(leaf->getLeft == null && leaf->getRight == null && leaf->gete != nodeToCombine->gete){		//If at last spot and it doesn't equal. return false. Not found.
+				return false;
+			}
+			else if( leaf->gete() == nodeToCombine->gete() && leaf!=nodeToCombine){
+				if(leaf->getCopied == false){			//This way we are only 
+					set nodeToCombine = combineTerms(leaf,nodeToCombine)
+					set nodeToCombine->setWasTheBaseForCopy(true)
+					set leaf->setCopied(true)
+					if(leaf->getLeft()->gete() == leaf->gete()){
+						call search(leaf->getLeft(),nodeToCombine)
+					}
+					else{
+						return true;
+					}
+				}
+				else{
+					call search(leaf->getLeft(),nodeToCombine)
+				}
+			}
+			else if(leaf->gete <= nodeToCombine->gete){
+				call search(leaf->getLeft(),nodeToCombine)
+			}
+			else if(leaf->gete > nodeToCombine->gete){
+				call search(leaf->getRight(),nodeToCombine)
+			}
+		}		//After search returns true for a certain node, set that node's beenCopied to true so we don't try to do this again
+
+	private:
+		Node* root
+
+
+
+Main class{
+	
+	void buildNode(string input,BinarySearchTree &tree){
+		int exponent =0 , coefNume = 0;
+		istringstream ss(input);
+		if(input.contains('^')){
+			istringstream expss(input);
+			string throwaway;
+			getline(expss,throwaway,'^');
+			expss.get();	//Throw away actual ^
+			expss >> exponent;
+		}
+		if(input.contains('x')){
+			istringstream coefss(input);
+			string toConvert;
+			getline(coefss,toConvert,'x');
+			coefNume = toConvert.toInteger();
+		}
+		else{
+			coefNume = input.toInteger();
+		}
+
+		Node* newNode = new Node(coefNume,exponent);
+		tree.insert(newNode,tree.getRoot());
+
+	}
+
+
+	int getGCD(int num1 , int num2){
+
+		int gcd, remainder;
+ 
+		while (num1 != 0)
+		{
+			remainder = num2 % num1;
+			num2 = num1;
+			num1 = remainder;
+		}
+ 
+		gcd = num2;
+ 
+		return gcd;
+	}
+
+	void reduceFraction(int& nume , int& denom){
+		nume = nume / getGCD(nume,denom)
+		denom = denom / getGCD(nume,denom)
+	}
+
+	Node* integrate(Node* inputNode){
+		Node* newNode = new Node();
+		int CoefN = 0;
+		int CoefD = 1;
+		int exp = 0;
+
+		exp = (inputNode->gete()) + 1;
+
+		if(exp >1 || exp < -1){		// Might need to simplify the coeficient. If denominator is 1 = no fraction.
+			CoefN = inputNode->getcn() / getGCD(inputNode->getcn(),exp)
+			CoefD = exp / getGCD(inputNode->getcn(),exp)
+		}
+		else{
+			coefN = inputNode->getcn();
+
+		}
+		newNode->sete(exp);
+		newNode->setcn(CoefN);
+		newNode->setcd(CoefD);
+		return newNode;
+	}
+
+	void transferIntegratedNodes(BinarySearchTree org , BinarySearchTree &newTree, Node* leaf){		//Recursive function to transfer nodes
+		if(newTree->getRoot() == 0){
+			newTree.insert(integrate(org->getRoot()));
+		}
+		else{
+			transferIntegratedNodes(org,newTree, leaf->getLeft());
+			if(leaf->getWasTheBaseForCopy() == true||leaf->getCopied() == false){
+				newTree.insert(integrate(leaf));
+			}
+			transferIntegratedNodes(org,newTree, leaf->getRight());
+		}
+
+	}
+
+	void simplifyAllFractions(Node* leaf , BinarySearchTree tree){
+		simplifyAllFractions(leaf->getLeft() , tree);
+		search(tree.getRoot() , leaf);
+		simplifyAllFractions(leaf->getRight() , tree);
+	}
+
+	void outputNode(Node* node){
+		if(node->getcd() != 1){
+			cout << "(" << node->getcn() << "/" << node->getcd() << ")"
+		}
+		if(node->gete != 0 && node->gete() != 1){
+			cout << "x^" << node->gete();
+		}
+		else if(node->gete() == 1){
+			cout << "x"
+		}
+
+		cout << " ";
+		
+	}
+
+	void outputTree(Node* leaf, BinarySearchTree tree){
+		outputTree(leaf->getLeft());
+		call outputNode(leaf);
+		outputTree(leaf->getRight());
+	}
+
+	void notDefinite(string wholeLine){			//THIS WORKS IF THERE ARE ALWAYS SPACES BETWEEN TERMS.
+		declare BinarySearchTree named OrgTree;
+		declare stringstream(wholeLine) named ss
+		string throwaway
+		getline(ss,throwaway," ") // throwaway start 
+		ss.get(); //Thowaway space If there is a space. Change if there isn't always a space.
+		string firstNodeString;
+		getline(ss,firstNodeString,' ')
+		ss.get();
+		call buildNode(firstNodeString,OrgTree);
+		while(ss.peek()!='d'){
+			string sign;
+			getline(ss,sign,' ');
+			ss.get();
+			string nextNode;
+			ss.getline(ss,nextNode,' ');
+			if(sign == "-"){
+				nextNode = sign + nextNode;
+			}
+			call buildNode(nextNode, OrgTree);
+		}
+
+
+		call simplifyAllFractions(OrgTree.getRoot() , OrgTree);
+
+		declare BinarySearchTree named finalTree
+
+		call transferIntegratedNodes(OrgTree,finalTree,OrgTree->getRoot())
+
+		call outputTree(finalTree.getRoot(), finalTree);
+		cout << "+ C" << endl;
+
+	}
+
+
+
+*		//IF THERE AREN'T ALWAYS SPACES, TRY THIS...
+*		......Start of method
+*		firstNodeString += ss.get();	//Get possible negative sign at the start
+*			while(ss.peek() != '+' || ss.peek() !+ '-'){
+*				firstNodeString += ss.get();
+*			}
+*			call buildNode(firstNodeString,OrgTree);
+*			while(ss.peek()!='d'){
+*				string sign = ss.get();
+*				string nextNode;
+*				while(ss.peek() != '+' || ss.peek() !+ '-'){
+*					nextNode += ss.get();
+*				}
+*				if(sign == "-"){
+*					nextNode = sign + nextNode;
+*				}
+*				call buildNode(nextNode, OrgTree);
+*			}
+
+
+void evalutateFunction(double &total , int x, BinarySearchTree tree , Node* leaf){
+	evaluateFunction(total,tree,leaf->getleft());
+	if(leaf->gete != 0){
+		total+= (leaf->getcn()/leaf->getcd()) * (x^leaf->gete());
+	}
+	else{
+		total += leaf->getcn
+	}
+
+}
+
+	void isDefinite(string wholeLine){
+		declare BinarySearchTree named tree;
+		declare stringstream(wholeLine) named ss
+		FINISH THIS. AFTER YOU BUILD THE NODES, HAVE TO SOLVE INTEGRAL AND WHATNOTv
+		int startIntegr, endIntegr;
+		ss >> startIntegr;
+		ss.get(); // thowaway the |
+		ss >> endIntegr;
+		ss.get() 	//Throw away the space if needed
+
+		string firstNodeString;				//Building nodes as if there are always spaces seperating them. Refer to above if that isn't the case.
+		getline(ss,firstNodeString,' ')
+		ss.get();
+		call buildNode(firstNodeString,OrgTree);
+		while(ss.peek()!='d'){
+			string sign;
+			getline(ss,sign,' ');
+			ss.get();
+			string nextNode;
+			ss.getline(ss,nextNode,' ');
+			if(sign == "-"){
+				nextNode = sign + nextNode;
+			}
+			call buildNode(nextNode, OrgTree);
+		}
+
+		call simplifyAllFractions(OrgTree.getRoot() , OrgTree);
+
+		declare BinarySearchTree named finalTree
+
+		call transferIntegratedNodes(OrgTree,finalTree,OrgTree->getRoot())
+
+		double firstEval, secondEval;
+
+		call EvaluateFunction(firstEval, startIntegr, finalTree, finaltree.getRoot());
+		call EvaluateFunction(secondEval, endIntegr, finalTree, finaltree.getRoot());
+
+		call outputTree(finalTree.getRoot(), finalTree);
+		cout << " , " << startIntegr << "|" << endIntegr << " = " << fixed << setprecision(3) << (secondEval - firstEval) << endl;
+
+		
+
+
+
+
+	}
+
+
+	input function{
+		while(!eof){
+			bool definite = true
+			string wholeLine = getLine
+			if(wholeLine[0] == '|'){
+				definite = false;
+			}
+			if(!definite){
+				call notDefinite(wholeline)
+			}
+			else{
+				call isDefinite(wholeLine)
+			}
+		}
+	}
+}

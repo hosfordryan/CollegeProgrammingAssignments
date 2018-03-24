@@ -1,0 +1,184 @@
+Class ComplexNumber{
+
+    double realNum
+    double imaginaryNum
+
+    Default constructor:{
+        realNum = 0
+        imaginaryNum = 0
+    }
+
+    constructor for only real number:{
+        (Takes 1 input, double real = Real number)
+        realNum = real
+        imaginaryNum = 0
+    }
+
+    constructor for only imaginary number:{
+        (Takes 1 input, double imaginary = imaginary number)
+        imaginaryNum = imaginary
+        realNum = 0
+    }
+
+    Copy constructor:{
+        (Takes 1 input, const ComplexNumber& CN)
+        temp = new ComplexNumber
+        temp = CN
+
+    }
+
+    AccessorMethod: string getR(){
+        string ret = "";
+        Append realNum to ret
+        return ret
+    }
+    AccessorMethod: string getI(){
+        string ret = "";
+        Append imaginaryNum to ret
+        return ret
+    }
+
+    MutatuorMethod: void setR(double newR){
+        realNum = newR
+    }
+
+    MutatuorMethod: void setI(double newI){
+        imaginaryNum = newI
+    }
+
+
+-----------------------------------------Arithmetic------------------------------------------------
+
+
+    Overload + :{
+        ()Return ComplexNumber, Takes 2 ComplexNumber as input)
+        Create new ComplexNumber with the 2 parts being the input's parts added together
+        return new ComplexNumber
+    }
+
+    Overload - :{
+        ()Return ComplexNumber, Takes 2 ComplexNumber as input)
+        Create new ComplexNumber with the 2 parts being the input's parts subtracted
+        return new ComplexNumber
+    }
+
+    Overload * :{
+        Return ComplexNumber, Takes 2 ComplexNumber as input (in1,in2))
+        double a = in1.getR()
+        double b = in1.getI()
+        double c = in2.getR()
+        double d = in2.getI()
+
+        Create new ComplexNumber with parameters (a*c-b*d, b*c+a*d)
+        return new ComplexNumber
+    }
+
+
+    Overload / :{
+        Return ComplexNumber, Takes 2 ComplexNumber as input (in1,in2))
+        double a = in1.getR()
+        double b = in1.getI()
+        double c = in2.getR()
+        double d = in2.getI()
+
+        Create new ComplexNumber with parameters ((a*c+b*d) / (c*c+d*d) , (b*c-a*d) / (c*c+d*d))
+        return new ComplexNumber
+    }
+
+
+--------------------------------------------------Relational-----------------------------------------------
+
+
+    double getMagnitude(ComplexNumber in){
+        return (Square root of( (in.getR() * in.getR) + (in.getI() * in.getI()))
+    }
+
+    Overload < :{
+        return boolean, Takes 2 ComplexNumber as input (in1,in2)
+        if(getMagnitude(in1) < getMagnitude(in2))
+            return true
+        else
+            return false
+    }
+
+    Overload > :{
+        return boolean, Takes 2 ComplexNumber as input (in1,in2)
+        if(getMagnitude(in1) > getMagnitude(in2))
+            return true
+        else
+            return false
+    }
+
+    Overload == :{
+        return boolean, Takes 2 ComplexNumber as input (in1,in2)
+        return (in1 == in2)
+    }
+
+    Overload != :{
+        return boolean, Takes 2 ComplexNumber as input (in1,in2)
+        return !(in1 == in2)
+    }
+
+
+------------------------------------------------I/O-----------------------------------------------------------
+
+    Overload << :{
+        returns ostream, Takes ostream& and ComplexNumber as input (os,CN)
+        char sign is = ''
+        if (CN.getI() < 0) sign = '+'
+        return os << CN.getR() << sign << CN.getI() << "i"
+    }
+
+    Overload >> :{
+        returns ifstream, Takes ifstream& and ComplexNumber as input (is,CN)
+        set char filter = 0
+        set double r = 0
+        set double i = 0
+
+        is >> r >> i >> filter
+
+        CN.setR(r)
+        CN.setI(i)
+
+        return is
+    }
+
+
+} ENDCLASS
+
+
+
+output function: {
+    takes 4 inputs, double,ComplexNumber,ComplexNumber,string (ans,CN1,CN2,op)
+    output to file "results.txt":
+        left justified, setWidth << CN1 << op << CN2 << "\t" << ans
+}
+
+output function: {
+    takes 4 inputs, boolean,ComplexNumber,ComplexNumber,string (ans,CN1,CN2,op)
+    output to file "results.txt":
+        left justified, setWidth << CN1 << op << CN2 << "\t" << ans
+}
+
+operation function: {
+    takes 2 ComplexNumber objects and a string (CN1,CN2,op)
+    Check which operation is in the string and call output function((CN1 *operator* CN2) , CN1,CN2,op)
+
+}
+
+input function: {
+    read input file "complex.txt" save ifstream as "in"
+    while(not at end of file){
+        Make new ComplexNumber object and save first input as new object
+        save next input as string "operator"
+        Make new ComplexNumber object and save last input as new object
+
+        call operation function (ComplexNumber1,ComplexNumber2,operator)
+    }
+
+
+}
+
+main function{
+    call input
+}
